@@ -11,3 +11,6 @@ class Register(models.Model):
 
     def __str__(self):
         return self.MAC
+
+class FileUpload(models.Model):
+    myfile = models.FileField('파일 업로드')

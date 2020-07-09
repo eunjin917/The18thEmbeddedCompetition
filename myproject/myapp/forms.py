@@ -1,5 +1,5 @@
 from django import forms
-from .models import Register
+from .models import Register, FileUpload
 
 class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -19,3 +19,13 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = Register
         fields = ['VIN', 'MAC', 'name', 'tel']
+
+class FileUploadForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(FileUploadForm, self).__init__(*args, **kwargs)
+        self.fields['myfile'].widget.attrs.update(
+            {'class': "file_item"})
+
+    class Meta:
+        model = FileUpload
+        fields = ['myfile']
