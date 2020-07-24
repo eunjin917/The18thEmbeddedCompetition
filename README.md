@@ -1,7 +1,5 @@
 # The 18th embedded competition
 
-----
-
 ## Requirements
 
 * Python >= 3.6
@@ -31,8 +29,7 @@ $ pip install django
   ```
   $ . myvenv/Scripts/activate //windows
   ```
-* 
-
+  
 ## Local Dev Server
 ```
 // web server
