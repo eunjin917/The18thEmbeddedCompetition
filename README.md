@@ -5,6 +5,7 @@
 * Python >= 3.6
 
 ## Project Setting
+**git bash에서 수행**
 
 * Clone from Github
 ```
