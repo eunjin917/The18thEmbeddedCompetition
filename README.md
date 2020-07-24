@@ -1,16 +1,45 @@
-# 블루투스를 활용한 각종 사고 및 범죄의 사각지대 해결 서비스
+# The 18th embedded competition
 
-### ROLE 분담
-* 하드웨어
-* 소프트웨어
+## Requirements
 
-### 개발 준비 사항
-* 구현하고 싶은 기능 또는 필요한 기능 명세
-* 명확한 역할 분담 
-* 프로젝트 일정 논의
-* 기타 등등 필요한 사항들?
-* gitlab 사용/활용 방법 공부
-* 소프트웨어 기술은 가능한 최신 기술을 활용하여 작업이 필요
+* Python >= 3.6
 
+## Project Setting
 
-    
+* Clone from Github
+```
+// You **MUST** work in a clean directory.
+$ git clone https://gitlab.com/NPclown/the-18th-embedded-competition.git
+$ cd the-18th-embedded-competition // D:\the-18th-embedded-competition\
+```
+
+* Install django
+```
+$ cd web // D:\the-18th-embedded-competition\web
+$ pip install django
+```
+
+* Setting ENV
+  * copy `venv`
+  ```
+  $ python -m venv myvenv
+  ```
+
+  * Acitvate `venv`
+  ```
+  $ . myvenv/Scripts/activate //windows
+  ```
+  
+## Local Dev Server
+```
+// web server
+$ cd myproject // D:\the-18th-embedded-competition\web\myproject
+$ python manage.py runserver
+
+// user
+https://127.0.0.1:8000
+
+// admin
+https://127.0.0.1:8000/admin
+ID : admin, PW : admin
+```
