@@ -58,14 +58,21 @@ def signup(request):
     if request.method == 'POST':
         signup_form = UserForm(request.POST)
         if signup_form.is_valid():
-            print("JJJJJJJJ")
             user = signup_form.save()
             auth.login(request, user)
             return redirect('mainpage')
     else:
         signup_form = UserForm()
-    
-    return render(request, 'registration/signup.html', {'signup_form':signup_form})
+
+    context = {'signup_form':signup_form}
+
+    if signup_form.errors:
+        for field in signup_form:
+            if field.errors:
+                context['error']=field.errors
+                break
+
+    return render(request, 'registration/signup.html', context)
 
 def userfile(request):
     if request.method == 'POST':
@@ -118,11 +125,19 @@ def foruser(request):
             del item[0]
 
             carcount = 0
+            carinfo = []
             for carmac in item:
-                if infos.filter(MAC=carmac).get() is not None:
-                    carcount += 1
+                info = infos.filter(MAC=carmac).get()
+                carinfo.append((info.VIN, info.name, info.tel))
+                carcount += 1
             acci.append(carcount)
             accidents.append(acci)
+
+            # 사고 정보 저장해서 올리기
+            try:
+                Accident.objects.create(mycar_date=mycar.VIN+'_'+time, info=carinfo)
+            except:
+                pass
 
         context = {'mycar':mycar, 'accidents':accidents}
     except:
@@ -176,8 +191,24 @@ def forpoli(request):
 
     return render(request, 'forpoli.html', context)
 
+@login_required
 def alldata(request):
-    return render(request, 'alldata.html')
+    infos = Accident.objects.all()
+    search = request.GET.get('search', '')
+    if search:
+        infos = infos.filter(mycar_date__icontains=search)
+
+    context = {'infos':infos, 'search':search}
+
+    return render(request, 'alldata.html', context)
+
+@login_required
+def searchdata(request, id):
+    info = Accident.objects.get(pk=id)
+    info = eval(info.info)
+    context = {'info':info}
+
+    return render(request, 'searchdata.html', context)
 
 def error(request):
     return render(request, 'error.html')

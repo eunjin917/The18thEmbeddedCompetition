@@ -6,27 +6,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수사기관 로그인</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/signin.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+
 </head>
 
 <body>
-    <h1 class="nanum">로그인</h1>
-    <form method="POST">
+    <div class="navbar">
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>TITLE</h1></button></a>
+    </div>
+    
+    <form method="POST" class="container">
         {% csrf_token %}
-        {{loginform}}
+        {% for i in loginform %}
+        <div class="label">{{i.label}}</div>
+        {{i}}
+        {% endfor %}
 
         {% if messages %}
         <ul class="messages">
             {% for message in messages %}
-            <li class="{{ message.tags }}">{{message}}</li>
+            <li>{{message}}</li>
             {% endfor %}
         </ul>
         {% endif %}
         
-        <input type="submit" value="login" id="login_btn">
-        <div class="urlmoum">
-            <a href="{% url 'signup' %}">회원가입</a> /  아이디 찾기  /  비밀번호 찾기
-        </div>
+        <input type="submit" value="로그인" id="login_btn">
+        <a href="{% url 'signup' %}" class="regi">회원가입</a>
     </form>
 </body>
 

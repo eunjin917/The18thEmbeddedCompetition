@@ -7,14 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>기기 등록하기</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 </head>
 
 <body>
-    <h1>기기 등록하기</h1>
+    <div class="navbar">
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>TITLE</h1></button></a>
+    </div>
+    
     <form method="POST" class="container">
         {% csrf_token %}
         {% for i in regiform %}
-        {{i.label}}
+        <div class="label">{{i.label}}</div>
         {{i}}
         {% endfor %}
 

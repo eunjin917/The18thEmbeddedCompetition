@@ -1,11 +1,5 @@
-.label {
-    display: flex;
-    margin-left: 30%;
-    color: slateblue;
-    font-weight: bold;
-}
 
-.rg_item {
+#id_username, #id_password {
     width: 40%;
     height: 35px;
     margin: 10px auto;
@@ -15,7 +9,14 @@
     background-color: snow;
 }
 
-#rg_btn {
+.label {
+    display: flex;
+    margin-left: 30%;
+    color: slateblue;
+    font-weight: bold;
+}
+
+#login_btn {
     width: 40%;
     height: 50px;
     margin: 30px auto;
@@ -24,7 +25,6 @@
     justify-content: center;
     background-color: slateblue;
     color: snow;
-    /* outline: 0; */
 }
 
 .messages {
@@ -32,4 +32,8 @@
     margin-left: 30%;
     color: slateblue;
     font-weight: bold;
+}
+
+.regi {
+    margin-left: 30%;
 }

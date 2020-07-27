@@ -11,8 +11,18 @@
 
 <body>
     <h1>all data</h1>
+    <form method="get" action="{%url 'alldata'%}">
+        <input type="text" class="searchTerm" placeholder="차대번호를 입력해주세요" aria-label="Search" name = "search" value="{{search}}">
+        <button type="submit" class="searchButton">
+            <!-- <img id="search-icon" src="\static\img\searchimg.png" alt="search"> -->
+        </button>
+    </form>
 
-
+    {% for info in infos %}
+        <a href="{% url 'searchdata' info.id %}">
+            {{info.mycar_date}}
+        </a>
+    {% endfor %}
 </body>
 
 </html>

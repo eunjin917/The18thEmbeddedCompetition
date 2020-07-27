@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 
 from django.contrib import admin
 from django.urls import path
-from myapp.views import mainpage, register, userfile, foruser, UserLoginView, signup, polifile, forpoli, alldata, error
+from myapp.views import mainpage, register, userfile, foruser, UserLoginView, signup, polifile, forpoli, alldata, searchdata, error
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -34,8 +34,8 @@ urlpatterns = [
     path('polifile/', polifile, name="polifile"),
     path('forpoli/', forpoli, name="forpoli"),
     path('alldata/', alldata, name="alldata"),
+    path('searchdata/<int:id>', searchdata, name="searchdata"),
     path('error/', error, name="error"),
-
 ]
 
 if settings.DEBUG:

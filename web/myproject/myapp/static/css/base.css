@@ -1,0 +1,20 @@
+body {
+    background-color: snow;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+}
+
+.title {
+    font-size: 30px;
+    color: slateblue;
+    background-color: snow;
+    border: 0;
+    outline: 0;
+}
+
+.container {
+    margin-top: 20px;
+}
