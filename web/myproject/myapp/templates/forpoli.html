@@ -11,10 +11,14 @@
 
 <body>
     <h1>for poli</h1>
-    {% for item in mylst %}
-    <p>{{item.0}}</p>
-    <p>{{item.1}}</p>
-    <p>{{item.2}}</p>
+
+    <p>내 차량 정보 : {{mycar.VIN}}, {{mycar.name}}, {{mycar.tel}}</p>
+
+    {% for acci in accidents %}
+        <p>시간 : {{acci.0}}</p>
+        {% for carinfo in acci.1 %}
+            <p> 차량 정보 : {{carinfo.0}} {{carinfo.1}} {{carinfo.2}}</p>
+        {% endfor %}
     {% endfor %}
 </body>
 

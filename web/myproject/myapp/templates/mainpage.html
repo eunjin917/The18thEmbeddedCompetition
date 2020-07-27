@@ -11,10 +11,22 @@
 
 <body>
     <h1 class="nanum">❣제에에모오옥❣</h1>
+    <div class='mode'>
+        {%if user.is_authenticated%}
+        <a href="{%url 'logout' %}"><button id="modebtn">수사기관 로그아웃</button></a>
+        {%else%}
+        <a href="{%url 'login' %}"><button id="modebtn">수사기관 로그인</button></a>
+        {%endif%}
+    </div>
+    
     <div class='container'>
+        {%if user.is_authenticated%}
+        <a href="{%url 'polifile' %}"><button id="urlbtn">수사기관 전용</button></a>
+        <a href="{%url 'polifile' %}"><button id="urlbtn">for수사기관<br>주변 차량 확인하기</button></a>
+        {%else%}
         <a href="{%url 'register' %}"><button id="urlbtn">기기 등록하기</button></a>
         <a href="{%url 'userfile' %}"><button id="urlbtn">for사용자<br>주변 차량 확인하기</button></a>
-        <a href="{%url 'polifile' %}"><button id="urlbtn">ONLY 수사기관</button></a>
+        {%endif%}
     </div>
 </body>
 

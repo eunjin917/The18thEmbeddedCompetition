@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
+</head>
+
+<body>
+
+    <form method="POST">
+        {% csrf_token %}
+        {% for i in signup_form %}
+        {{i.label}}
+        {{i}}
+        {% endfor %}
+
+        {% if signup_form.errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for field in signup_form %}
+                {% if field.errors %}
+                <!-- <strong>{{ field.label }}</strong> -->
+                {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
+
+        <input type="submit" value="회원가입" id="register_btn">
+    </form>
+</body>
+
+</html>

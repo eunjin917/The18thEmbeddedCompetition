@@ -5,18 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>기기 등록하기</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+    <title>수사기관 로그인</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/signin.css' %}">
 </head>
 
 <body>
-    <h1>기기 등록하기</h1>
-    <form method="POST" class="container">
+    <h1 class="nanum">로그인</h1>
+    <form method="POST">
         {% csrf_token %}
-        {% for i in regiform %}
-        {{i.label}}
-        {{i}}
-        {% endfor %}
+        {{loginform}}
 
         {% if messages %}
         <ul class="messages">
@@ -25,8 +22,11 @@
             {% endfor %}
         </ul>
         {% endif %}
-
-        <input type="submit" value="등록" id="rg_btn">
+        
+        <input type="submit" value="login" id="login_btn">
+        <div class="urlmoum">
+            <a href="{% url 'signup' %}">회원가입</a> /  아이디 찾기  /  비밀번호 찾기
+        </div>
     </form>
 </body>
 

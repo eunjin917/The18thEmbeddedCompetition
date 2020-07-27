@@ -35,3 +35,10 @@ h1 {
     color: #345d83;
 }
 
+#modebtn {
+    display: flex;
+    justify-content: center;
+    /* margin-bottom: 100px */
+    /* margin: 0 30px; */
+    color: #345d83;
+}

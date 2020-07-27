@@ -35,3 +35,8 @@ h1 {
     color: #345d83;
 }
 
+#modebtn {
+    display: float;
+    margin-left: 1000px;
+    color: #345d83;
+}
