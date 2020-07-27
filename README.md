@@ -42,5 +42,5 @@ https://127.0.0.1:8000
 
 // admin
 https://127.0.0.1:8000/admin
-ID : admin, PW : admin
+ID : admin@admin.admin, PW : admin
 ```
