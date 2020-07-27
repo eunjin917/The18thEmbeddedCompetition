@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, FileUploadForm, UserForm, LoginForm
-from .models import Register, FileUpload, User
+from .models import Register, FileUpload, User, Accident
 from django.contrib.auth import authenticate
 from django.contrib import auth
 from django.contrib import messages
@@ -147,7 +147,6 @@ def forpoli(request):
         mycarstr = datas[0]
         del datas[0]
         mycar = infos.filter(MAC=mycarstr).get()
-        print(mycar.VIN, mycar.name)
 
         # 2. 사고 단위
         accidents = []
@@ -155,6 +154,7 @@ def forpoli(request):
             acci = []
             item = item.split('\r\n')
             acci.append(item[0]) # 사고시간
+            time = item[0]
             del item[0]
 
             carinfo = []
@@ -164,11 +164,20 @@ def forpoli(request):
             acci.append(carinfo)
             accidents.append(acci)
 
+            # 사고 정보 저장해서 올리기
+            try:
+                Accident.objects.create(mycar_date=mycar.VIN+'_'+time, info=carinfo)
+            except:
+                pass
+
         context = {'mycar':mycar, 'accidents':accidents}
     except:
         return redirect('error')
 
     return render(request, 'forpoli.html', context)
+
+def alldata(request):
+    return render(request, 'alldata.html')
 
 def error(request):
     return render(request, 'error.html')

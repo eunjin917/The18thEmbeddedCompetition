@@ -18,10 +18,13 @@ class Register(models.Model):
 class FileUpload(models.Model):
     myfile = models.FileField('파일 업로드')
 
-# class Accident(models.Model):
-#     mycar = models.CharField('차대번호(17자리)', max_length=20)
-#     time = models.
-#     info = models.
+class Accident(models.Model):
+    mycar_date = models.CharField('차대번호(17자리)_사고발생시간', max_length=37, unique=True)
+    # date = models.CharField('사고발생시간', max_length=17)
+    info = models.CharField('사고 정보', max_length=10000)
+
+    def __str__(self):
+        return self.mycar_date
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, nickname, **extra_fields):

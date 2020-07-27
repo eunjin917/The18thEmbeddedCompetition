@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 
 from django.contrib import admin
 from django.urls import path
-from myapp.views import mainpage, register, userfile, foruser, UserLoginView, signup, polifile, forpoli, error
+from myapp.views import mainpage, register, userfile, foruser, UserLoginView, signup, polifile, forpoli, alldata, error
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -30,10 +30,10 @@ urlpatterns = [
     path('foruser/', foruser, name="foruser"),
     path('login/', UserLoginView.as_view(), name="login"),
     path('signup/', signup, name="signup"),
-    # path('login/', login, name="login"),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('polifile/', polifile, name="polifile"),
     path('forpoli/', forpoli, name="forpoli"),
+    path('alldata/', alldata, name="alldata"),
     path('error/', error, name="error"),
 
 ]
