@@ -5,24 +5,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>all data</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/forpoli.css' %}">
+    <title>수사기관 전용</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/alldata.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 </head>
 
 <body>
-    <h1>all data</h1>
-    <form method="get" action="{%url 'alldata'%}">
-        <input type="text" class="searchTerm" placeholder="차대번호를 입력해주세요" aria-label="Search" name = "search" value="{{search}}">
-        <button type="submit" class="searchButton">
-            <!-- <img id="search-icon" src="\static\img\searchimg.png" alt="search"> -->
-        </button>
-    </form>
+    <div class="navbar">
+        <a href="{%url 'mainpage' %}"><button class="title">
+                <h1>TITLE</h1>
+            </button></a>
+    </div>
 
-    {% for info in infos %}
-        <a href="{% url 'searchdata' info.id %}">
-            {{info.mycar_date}}
-        </a>
-    {% endfor %}
+    <div class="container">
+
+        <form method="get" action="{%url 'alldata'%}" class="search">
+            <label class=search-label>차대번호 17자리로 검색하기 (사고 피해 차량을 입력하세요) </label>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="00000000000000000" aria-label="Search"
+                    name="search" value="{{search}}">
+                <button type="submit" class="search-button"><img id="search-icon" src="\static\img\search.png"
+                        alt="검색"></button>
+            </div>
+        </form>
+
+        <div class="info-container">
+        {% for info in infos %}
+            <a href="{% url 'searchdata' info.id %}"><button class="info-item">{{info.mycar_date}}</button></a>
+        {% endfor %}
+        </div>
+    </div>
 </body>
 
 </html>

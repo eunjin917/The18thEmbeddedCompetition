@@ -74,30 +74,21 @@ def signup(request):
 
     return render(request, 'registration/signup.html', context)
 
-def userfile(request):
+def fileupload(request):
     if request.method == 'POST':
         fileform = FileUploadForm(request.POST, request.FILES)  # Do not forget to add: request.FILES
         if fileform.is_valid():
-            # 저장
             fileform.save()
-            return redirect('foruser')
+
+            user = request.user
+            if user.is_authenticated:
+                return redirect('forpoli')
+            else:
+                return redirect('foruser')
 
     fileform = FileUploadForm()
     context = {'fileform':fileform}
-    return render(request, 'userfile.html', context)
-
-@login_required
-def polifile(request):
-    if request.method == 'POST':
-        fileform = FileUploadForm(request.POST, request.FILES)  # Do not forget to add: request.FILES
-        if fileform.is_valid():
-            # 저장
-            fileform.save()
-            return redirect('forpoli')
-
-    fileform = FileUploadForm()
-    context = {'fileform':fileform}
-    return render(request, 'polifile.html', context)
+    return render(request, 'fileupload.html', context)
 
 def foruser(request):
     try:
