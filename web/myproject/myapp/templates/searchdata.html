@@ -5,17 +5,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>all data</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/forpoli.css' %}">
+    <title>사고 정보 확인</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/searchdata.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 </head>
 
 <body>
-    <h1>all data</h1>
-    
-    {% for carinfo in info %}
-        <p> 차량 정보 : {{carinfo.0}} {{carinfo.1}} {{carinfo.2}}</p>
-    {% endfor %}
+    <div class="navbar">
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>TITLE</h1></button></a>
+    </div>
 
+    <h3 class="mycar-label">사고 차량</h3>
+    <div class="mycar">차대번호 : {{mycar.VIN}}<br>운전자 이름 : {{mycar.name}}<br>연락처 : {{mycar.tel}}</div>
+
+    {% if carcount == 0 %}
+        <h3 class="label">저장된 주변 차량 정보가 없습니다.</h3>
+    {% else %}
+        <h3 class="label">사고 주변 차량 정보</h3>
+        <table class="table">
+            <th>차대번호</th>
+            <th>운전자 이름</th>
+            <th>연락처</th>
+            {% for carinfo in othercars.all %}
+                <tr>
+                    <td>{{carinfo.VIN}}</td>
+                    <td>{{carinfo.name}}</td>
+                    <td>{{carinfo.tel}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        {% if noregicar %}
+            <h3 class="label">기기등록 안 된 차량</h3>
+            <table class="table">
+                <th>MAC주소</th>
+                {% for carmac in noregicar %}
+                    <td>{{carmac}}</td>
+                {% endfor %}
+            </table>
+        {% endif %}
+    {% endif %}
 </body>
-
 </html>

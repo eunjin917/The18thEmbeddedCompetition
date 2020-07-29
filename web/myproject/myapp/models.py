@@ -13,15 +13,18 @@ class Register(models.Model):
     tel = models.CharField('연락처(-포함)', max_length=20, unique=True)
 
     def __str__(self):
-        return self.MAC
+        return self.VIN
 
 class FileUpload(models.Model):
     myfile = models.FileField('파일 업로드')
 
 class Accident(models.Model):
     mycar_date = models.CharField('차대번호(17자리)_사고발생시간', max_length=37, unique=True)
-    # date = models.CharField('사고발생시간', max_length=17)
-    info = models.CharField('사고 정보', max_length=10000)
+    mycar = models.ForeignKey('Register', related_name='mycar', on_delete=models.CASCADE)
+    date = models.CharField('사고발생시간', max_length=20)
+    othercars = models.ManyToManyField('Register', related_name='othercars', blank=True)
+    noregicar = models.CharField('등록안된차량 mac주소', blank=True, max_length=10000)
+    carcount = models.IntegerField('차량수', default=0)
 
     def __str__(self):
         return self.mycar_date

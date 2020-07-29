@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 
 from django.contrib import admin
 from django.urls import path
-from myapp.views import mainpage, register, fileupload, foruser, UserLoginView, signup, forpoli, alldata, searchdata, error
+from myapp.views import mainpage, register, fileupload, accidentcheck, UserLoginView, signup, alldata, searchdata, error
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -27,11 +27,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register, name="register"),
     path('fileupload/', fileupload, name="fileupload"),
-    path('foruser/', foruser, name="foruser"),
+    path('accidentcheck/', accidentcheck, name="accidentcheck"),
     path('login/', UserLoginView.as_view(), name="login"),
     path('signup/', signup, name="signup"),
     path('logout/', LogoutView.as_view(), name="logout"),
-    path('forpoli/', forpoli, name="forpoli"),
+    # path('forpoli/', forpoli, name="forpoli"),
     path('alldata/', alldata, name="alldata"),
     path('searchdata/<int:id>', searchdata, name="searchdata"),
     path('error/', error, name="error"),

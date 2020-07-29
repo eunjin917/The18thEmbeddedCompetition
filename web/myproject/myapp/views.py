@@ -11,10 +11,12 @@ from django.contrib import messages
 
 # Create your views here.
 
+
 def mainpage(request):
     user = request.user
-    context = {'user':user}
+    context = {'user': user}
     return render(request, 'mainpage.html', context)
+
 
 def register(request):
     regiform = RegisterForm
@@ -26,15 +28,17 @@ def register(request):
             elif len(regiform.cleaned_data['MAC']) != 12:
                 messages.info(request, 'MAC주소 12자리를 정확하게 입력해주세요.')
             elif len(regiform.cleaned_data['tel']) not in [12, 13] or regiform.cleaned_data['tel'].count('-') != 2:
-                messages.info(request, '연락처 12자리 또는 13자리를 -를 포함하여 정확하게 입력해주세요.')
+                messages.info(
+                    request, '연락처 12자리 또는 13자리를 -를 포함하여 정확하게 입력해주세요.')
             else:
-                regiform.save()  
+                regiform.save()
                 return redirect('mainpage')
         else:
             messages.info(request, '이미 등록된 정보입니다. 다시 확인해 주세요')
 
-    context = {'regiform':regiform}
+    context = {'regiform': regiform}
     return render(request, 'register.html', context)
+
 
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
@@ -50,6 +54,7 @@ class UserLoginView(LoginView):
         auth.login(self.request, user)
         return redirect('mainpage')
 
+
 def signup(request):
     user = request.user
     if user.is_authenticated:
@@ -64,40 +69,38 @@ def signup(request):
     else:
         signup_form = UserForm()
 
-    context = {'signup_form':signup_form}
+    context = {'signup_form': signup_form}
 
     if signup_form.errors:
         for field in signup_form:
             if field.errors:
-                context['error']=field.errors
+                context['error'] = field.errors
                 break
 
     return render(request, 'registration/signup.html', context)
 
+
 def fileupload(request):
     if request.method == 'POST':
-        fileform = FileUploadForm(request.POST, request.FILES)  # Do not forget to add: request.FILES
+        # Do not forget to add: request.FILES
+        fileform = FileUploadForm(request.POST, request.FILES)
         if fileform.is_valid():
             fileform.save()
-
-            user = request.user
-            if user.is_authenticated:
-                return redirect('forpoli')
-            else:
-                return redirect('foruser')
+            return redirect('accidentcheck')
 
     fileform = FileUploadForm()
-    context = {'fileform':fileform}
+    context = {'fileform': fileform}
     return render(request, 'fileupload.html', context)
 
-def foruser(request):
+
+def accidentcheck(request):
     try:
         # 읽기
         myfileitem = FileUpload.objects.last()
         data = myfileitem.myfile.file.read()
         data = data.decode("utf-8")
         # 삭제
-        myfileitem.delete()  
+        myfileitem.delete()
         # 가공
         datas = data.split('\r\n/')
         infos = Register.objects.all()
@@ -105,82 +108,43 @@ def foruser(request):
         # 1. 내 차량
         mycarstr = datas[0]
         del datas[0]
-        mycar = infos.filter(MAC=mycarstr).get()
+        try:
+            mycar = infos.filter(MAC=mycarstr).get()
+        except:
+            return redirect('error')
 
-        # 2. 사고 단위
-        accidents = []
+        # 2. 사고 단위로
+        accimoum = []
         for item in datas:
             acci = []
             item = item.split('\r\n')
-            acci.append(item[0]) # 사고시간
-            del item[0]
-
-            carcount = 0
-            carinfo = []
-            for carmac in item:
-                info = infos.filter(MAC=carmac).get()
-                carinfo.append((info.VIN, info.name, info.tel))
-                carcount += 1
-            acci.append(carcount)
-            accidents.append(acci)
-
-            # 사고 정보 저장해서 올리기
-            try:
-                Accident.objects.create(mycar_date=mycar.VIN+'_'+time, info=carinfo)
-            except:
-                pass
-
-        context = {'mycar':mycar, 'accidents':accidents}
-    except:
-        return redirect('error')
-
-    return render(request, 'foruser.html', context)
-
-@login_required
-def forpoli(request):
-    try:
-        # 읽기
-        myfileitem = FileUpload.objects.last()
-        data = myfileitem.myfile.file.read()
-        data = data.decode("utf-8")
-        # 삭제
-        myfileitem.delete()  
-        # 가공
-        datas = data.split('\r\n/')
-        infos = Register.objects.all()
-
-        # 1. 내 차량
-        mycarstr = datas[0]
-        del datas[0]
-        mycar = infos.filter(MAC=mycarstr).get()
-
-        # 2. 사고 단위
-        accidents = []
-        for item in datas:
-            acci = []
-            item = item.split('\r\n')
-            acci.append(item[0]) # 사고시간
             time = item[0]
             del item[0]
+            acci.append(time)  # 사고시간
 
-            carinfo = []
-            for carmac in item:
-                info = infos.filter(MAC=carmac).get()
-                carinfo.append((info.VIN, info.name, info.tel))
-            acci.append(carinfo)
-            accidents.append(acci)
+            try: # 이미 등록돼있는 경우
+                accidents = Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).get()
+            except: # 등록X경우 저장해서 올리기
+                accidents = Accident.objects.create(
+                    mycar_date=mycar.VIN+'_'+time, mycar=mycar, date=time)
 
-            # 사고 정보 저장해서 올리기
-            try:
-                Accident.objects.create(mycar_date=mycar.VIN+'_'+time, info=carinfo)
-            except:
-                pass
+                noregilst = []
+                for carmac in item:
+                    try:
+                        info = infos.filter(MAC=carmac).get()
+                        accidents.othercars.add(info)
+                    except:
+                        noregilst.append(carmac)
+                Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).update(carcount=len(item), noregicar = noregilst)
+                accidents = Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).get()
 
-        context = {'mycar':mycar, 'accidents':accidents}
+            accimoum.append(accidents) # 사고 객체 저장
+
+        context = {'mycar': mycar, 'accimoum': accimoum}
     except:
-        return redirect('error')
+        return redirect('fileupload')
 
-    return render(request, 'forpoli.html', context)
+    return render(request, 'accidentcheck.html', context)
 
 @login_required
 def alldata(request):
@@ -189,17 +153,38 @@ def alldata(request):
     if search:
         infos = infos.filter(mycar_date__icontains=search)
 
-    context = {'infos':infos, 'search':search}
+    context = {'infos': infos, 'search': search}
 
     return render(request, 'alldata.html', context)
 
+
 @login_required
 def searchdata(request, id):
-    info = Accident.objects.get(pk=id)
-    info = eval(info.info)
-    context = {'info':info}
+    infos = Register.objects.all()
+    acci = Accident.objects.get(pk=id)
+    noregicar = eval(acci.noregicar)
+
+    # 등록안된 경우 있으면 다 찾아오기
+    if noregicar is not '[]':
+        noregilst = []
+        for mac in noregicar:
+            try:
+                info = infos.filter(MAC=mac).get()
+                acci.othercars.add(info)
+            except:
+                noregilst.append(mac)
+        Accident.objects.filter(pk=id).update(noregicar = noregilst)
+        acci = Accident.objects.get(pk=id)
+        noregicar = eval(acci.noregicar)
+
+    mycar = acci.mycar
+    othercars = acci.othercars
+    carcount = acci.carcount
+    
+    context = {'mycar':mycar, 'othercars': othercars, 'noregicar':noregicar, 'carcount':carcount}
 
     return render(request, 'searchdata.html', context)
+
 
 def error(request):
     return render(request, 'error.html')

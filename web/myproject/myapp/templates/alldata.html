@@ -30,9 +30,11 @@
         </form>
 
         <div class="info-container">
-        {% for info in infos %}
-            <a href="{% url 'searchdata' info.id %}"><button class="info-item">{{info.mycar_date}}</button></a>
-        {% endfor %}
+            {% for info in infos %}
+            <a href="{% url 'searchdata' info.id %}"><button class="info-item">차대번호 {{info.mycar}} | {{info.date}} | 주변
+                    차량
+                    {{info.carcount}}대</button></a>
+            {% endfor %}
         </div>
     </div>
 </body>
