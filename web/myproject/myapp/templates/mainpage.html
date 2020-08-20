@@ -6,15 +6,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인페이지</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/mainpage.css' %}">
 </head>
 
 <body>
-    <h1 class="nanum">❣제에에모오옥❣</h1>
+    <div class="navbar">
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>TITLE</h1></button></a>
+    </div>
+
+    <div class='mode'>
+        {%if user.is_authenticated%}
+        <a href="{%url 'logout' %}" id="modebtn"><img width=300px src="./static/img/off.png" alt="수사기관 로그아웃"></a>
+        {%else%}
+        <a href="{%url 'login' %}" id="modebtn"><img width=300px src="./static/img/on.png" alt="수사기관 로그인"></a>
+        {%endif%}
+    </div>
+    
     <div class='container'>
-        <a href="{%url 'register' %}"><button id="urlbtn">기기 등록하기</button></a>
-        <a href="{%url 'userfile' %}"><button id="urlbtn">for사용자<br>주변 차량 확인하기</button></a>
-        <a href="{%url 'polifile' %}"><button id="urlbtn">ONLY 수사기관</button></a>
+        {%if user.is_authenticated%}
+        <a href="{%url 'alldata' %}" class="item"><button id="urlbtn">수사기관 전용<br>검색 페이지</button></a>
+        {%else%}
+        <a href="{%url 'register' %}" class="item"><button id="urlbtn">기기 등록하기</button></a>
+        {%endif%}
+        
+        <a href="{%url 'fileupload' %}" class="item"><button id="urlbtn">사고 발생 시<br>주변 차량 확인하기</button></a>
     </div>
 </body>
 

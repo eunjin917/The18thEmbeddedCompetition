@@ -1,0 +1,29 @@
+.howto {
+    border: 2px solid slateblue;
+    border-radius: 2%;
+    width: 30%;
+    height: 200px;
+    margin: 20px auto;
+    padding: 5%;
+    color: slateblue;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.file_item {
+    display: flex;
+    margin-left: 30%;
+    color: slateblue;
+    font-weight: bold;
+}
+
+#upload_btn {
+    width: 40%;
+    height: 50px;
+    margin: 30px auto;
+    border: 0;
+    display: flex;
+    justify-content: center;
+    background-color: slateblue;
+    color: snow;
+}

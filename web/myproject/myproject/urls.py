@@ -19,18 +19,22 @@ from django.conf.urls.static import static
 
 from django.contrib import admin
 from django.urls import path
-from myapp.views import mainpage, register, userfile, foruser, polifile, forpoli, error
+from myapp.views import mainpage, register, fileupload, accidentcheck, UserLoginView, signup, alldata, searchdata, error
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', mainpage, name="mainpage"),
     path('admin/', admin.site.urls),
     path('register/', register, name="register"),
-    path('userfile/', userfile, name="userfile"),
-    path('foruser/', foruser, name="foruser"),
-    path('polifile/', polifile, name="polifile"),
-    path('forpoli/', forpoli, name="forpoli"),
+    path('fileupload/', fileupload, name="fileupload"),
+    path('accidentcheck/', accidentcheck, name="accidentcheck"),
+    path('login/', UserLoginView.as_view(), name="login"),
+    path('signup/', signup, name="signup"),
+    path('logout/', LogoutView.as_view(), name="logout"),
+    # path('forpoli/', forpoli, name="forpoli"),
+    path('alldata/', alldata, name="alldata"),
+    path('searchdata/<int:id>', searchdata, name="searchdata"),
     path('error/', error, name="error"),
-
 ]
 
 if settings.DEBUG:

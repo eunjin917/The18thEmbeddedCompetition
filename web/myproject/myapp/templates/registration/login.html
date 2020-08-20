@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수사기관 로그인</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>TITLE</h1></button></a>
+    </div>
+    
+    <form method="POST" class="container">
+        {% csrf_token %}
+        {% for i in loginform %}
+        <div class="label">{{i.label}}</div>
+        {{i}}
+        {% endfor %}
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li>{{message}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        
+        <input type="submit" value="로그인" id="login_btn">
+        <a href="{% url 'signup' %}" class="regi">회원가입</a>
+    </form>
+</body>
+
+</html>

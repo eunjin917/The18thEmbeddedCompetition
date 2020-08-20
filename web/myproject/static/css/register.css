@@ -1,43 +1,35 @@
-body {
-    background-color: #cfddeb;
-}
-
-h1 {
-    /* border: 1px solid red; */
+.label {
     display: flex;
-    justify-content: center;
-    font-size: 70px;
-    color: #fff8e3;
-    /* text-shadow: 0 0 10px #7aaad8; */
-    text-shadow: -3px 0 #7aaad8, 0 3px #7aaad8, 3px 0 #7aaad8, 0 -3px #7aaad8;
-    margin: 0 0;
-}
-
-.container {
-    /* border: 1px solid red; */
-    width: 500px;
-    height: 300px;
-    margin: 60px auto;
+    margin-left: 30%;
+    color: slateblue;
+    font-weight: bold;
 }
 
 .rg_item {
-    width: 99%;
+    width: 40%;
     height: 35px;
     margin: 10px auto;
-    border: 1px solid #999;
+    border: 1px solid slateblue;
     display: flex;
     justify-content: center;
-    background-color: whitesmoke;
-    color: #345d83;
+    background-color: snow;
 }
 
 #rg_btn {
-    width: 100%;
+    width: 40%;
     height: 50px;
-    margin: 50px auto;
-    border: 1px solid #999;
+    margin: 30px auto;
+    border: 0;
     display: flex;
     justify-content: center;
-    background-color: whitesmoke;
-    color: #345d83;
+    background-color: slateblue;
+    color: snow;
+    /* outline: 0; */
+}
+
+.messages {
+    display: flex;
+    margin-left: 30%;
+    color: slateblue;
+    font-weight: bold;
 }
