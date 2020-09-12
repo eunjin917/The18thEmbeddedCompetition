@@ -25,10 +25,17 @@
         <h3 class="label">저장된 사고가 없습니다</h3>
         {% else %}
         <h3 class="label">사고 정보 확인하기</h3>
-        {% for info in accimoum %}
-        <a href="{% url 'searchdata' info.id %}"><button class="info-item">{{info.date}} - 주변 차량
-                {{info.carcount}}대</button></a>
-        {% endfor %}
+        {%if user.is_authenticated%}
+            {% for info in accimoum %}
+            <a href="{% url 'searchdata' info.id %}"><button class="info-item">{{info.date}} - 주변 차량
+                    {{info.carcount}}대</button></a>
+            {% endfor %}
+        {% else %}
+            {% for info in accimoum %}
+            <button class="info-item">{{info.date}} - 주변 차량
+                    {{info.carcount}}대</button>
+            {% endfor %}
+        {% endif %}
         {% endif %}
     </div>
 </body>
