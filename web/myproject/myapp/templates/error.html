@@ -6,11 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>에러</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/error.css' %}">
 </head>
 
 <body>
-    <h1 class="nanum">차량 등록이 되어 있지 않습니다. 먼저 등록해주세요</h1>
+    <div class="navbar">
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>TITLE</h1></button></a>
+    </div>
+
+    <div class="error_message">
+        "기기 등록이 되어 있지 않습니다.&nbsp;<a href="{%url 'register' %}" class="url">기기 등록</a> 을 진행해주세요."
+    </div>
 </body>
 
 </html>
