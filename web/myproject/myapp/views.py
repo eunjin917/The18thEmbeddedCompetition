@@ -4,7 +4,6 @@ from .models import Register, FileUpload, User, Accident
 from django.contrib.auth import authenticate
 from django.contrib import auth
 from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -32,6 +31,20 @@ def register(request):
                     request, '연락처 12자리 또는 13자리를 -를 포함하여 정확하게 입력해주세요.')
             else:
                 regiform.save()
+
+                # 원래 사고정보-기기등록 안 된 차량에 해당되는 것이 있는지 확인 후, 사고 정보 업데이트
+                acci = Accident.objects.all()
+                myinfo = Register.objects.get(MAC=regiform.cleaned_data['MAC'])
+                contain_acci = acci.filter(noregicar__icontains=regiform.cleaned_data['MAC']).all() # 해당되는 사고들 다~ 찾아오기
+                for oneacci in contain_acci:
+                    # 1. noregicar 수정
+                    noregilst = eval(oneacci.noregicar)
+                    noregilst.remove(regiform.cleaned_data['MAC'])
+                    oneacci.noregicar = noregilst
+                    # 2. othercars 수정
+                    oneacci.othercars.add(myinfo)
+
+                    oneacci.save()
                 return redirect('mainpage')
         else:
             messages.info(request, '이미 등록된 정보입니다. 다시 확인해 주세요')
@@ -102,43 +115,57 @@ def accidentcheck(request):
         # 삭제
         myfileitem.delete()
         # 가공
-        datas = data.split('\r\n/')
+        datas = data.split('\r\n')
         infos = Register.objects.all()
 
         # 1. 내 차량
-        mycarstr = datas[0]
+        mycarMAC = datas[0]
         del datas[0]
         try:
-            mycar = infos.filter(MAC=mycarstr).get()
+            mycar = infos.filter(MAC=mycarMAC).get()
         except:
             return redirect('error')
 
-        # 2. 사고 단위로
-        accimoum = []
+        # 2. 모든 차량 정보 2차원배열에 넣기
+        cardata = []
         for item in datas:
-            acci = []
-            item = item.split('\r\n')
-            time = item[0]
-            del item[0]
-            acci.append(time)  # 사고시간
+            cardata += [item.split(' ')]
 
-            try: # 이미 등록돼있는 경우
-                accidents = Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).get()
-            except: # 등록X경우 저장해서 올리기
-                accidents = Accident.objects.create(
-                    mycar_date=mycar.VIN+'_'+time, mycar=mycar, date=time)
+        # 3. 사고 정보 뽑아내기
+        isacci = 0
+        accimoum = []
+        accicar = []
+        time = ''
+        for item in cardata:
+            if item[3] == '1':
+                isacci += 1
+                if isacci == 1: # 첫 번째 사고주변 차량일 경우
+                    time = item[1]+'_'+item[2] # 발생시간 확인
+                accicar.append(item[0]) # 사고발생차량 리스트로 싹 저장
+            elif item[3] == '0':
+                if time != '':
+                    # 4. DB와 대조 및 업데이트
+                    try: # 이미 등록돼있는 경우 냅두고
+                        accident = Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).get()
+                    except: # 등록X경우에는 저장해서 올려야함
+                        accident = Accident.objects.create(mycar_date=mycar.VIN+'_'+time, mycar=mycar, date=time)
+                        noregilst = []
+                        for carmac in accicar:
+                            try: # 기기등록한 차량일 경우 등록
+                                info = infos.filter(MAC=carmac).get()
+                                accident.othercars.add(info)
+                            except: #기기등록X 차량일 경우 일단 list형식으로 저장
+                                noregilst.append(carmac)
+                        accident.carcount = isacci
+                        accident.noregicar = noregilst
+                        accident.save()
 
-                noregilst = []
-                for carmac in item:
-                    try:
-                        info = infos.filter(MAC=carmac).get()
-                        accidents.othercars.add(info)
-                    except:
-                        noregilst.append(carmac)
-                Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).update(carcount=len(item), noregicar = noregilst)
-                accidents = Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).get()
-
-            accimoum.append(accidents) # 사고 객체 저장
+                    # 사고 객체 자체 (Accident객체)를 저장
+                    accimoum.append(accident)
+                    # 초기화
+                    time = ''
+                    accicar = []
+                    isacci = 0
 
         context = {'mycar': mycar, 'accimoum': accimoum}
     except:
@@ -160,25 +187,12 @@ def alldata(request):
 
 @login_required
 def searchdata(request, id):
-    infos = Register.objects.all()
+    # infos = Register.objects.all()
     acci = Accident.objects.get(pk=id)
-    noregicar = eval(acci.noregicar)
-
-    # 등록안된 경우 있으면 다 찾아오기
-    if noregicar is not '[]':
-        noregilst = []
-        for mac in noregicar:
-            try:
-                info = infos.filter(MAC=mac).get()
-                acci.othercars.add(info)
-            except:
-                noregilst.append(mac)
-        Accident.objects.filter(pk=id).update(noregicar = noregilst)
-        acci = Accident.objects.get(pk=id)
-        noregicar = eval(acci.noregicar)
 
     mycar = acci.mycar
     othercars = acci.othercars
+    noregicar = eval(acci.noregicar)
     carcount = acci.carcount
     
     context = {'mycar':mycar, 'othercars': othercars, 'noregicar':noregicar, 'carcount':carcount}

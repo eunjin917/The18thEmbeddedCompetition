@@ -48,10 +48,8 @@ ID : admin@admin.admin, PW : embedded
 - the-18th-embedded-competition\web\data.txt를 upload
 - 형식
 MAC주소12자리
-/날짜
-주변MAC주소12자리
-...
-/날짜
-주변MAC주소12자리
+주변차량1MAC주소12자리 0000년00월00일 00시00분 플래그(0or1)
+주변차량2MAC주소12자리 0000년00월00일 00시00분 플래그(0or1)
+주변차량3MAC주소12자리 0000년00월00일 00시00분 플래그(0or1)
 ...
 ```
