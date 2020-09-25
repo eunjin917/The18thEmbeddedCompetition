@@ -1,5 +1,5 @@
 body {
-    background-color: snow;
+    background-color: white;
 }
 
 .navbar {
@@ -10,7 +10,7 @@ body {
 .title {
     font-size: 30px;
     color: slateblue;
-    background-color: snow;
+    background-color: white;
     border: 0;
     outline: 0;
 }

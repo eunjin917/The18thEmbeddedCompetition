@@ -1,14 +1,11 @@
 .mycar-label, .label {
-    /* display: flex; */
     margin-left: 30%;
     color: slateblue;
     font-weight: bold;
-    /* font-size: 15px; */
 }
 
 .mycar {
     border: 2px solid slateblue;
-    /* border-radius: 2%; */
     width: 38%;
     height: 60px;
     margin: 20px auto;
@@ -23,7 +20,7 @@
 
 .table {
     border: 2px solid slateblue;
-    background-color: snow;
+    background-color: white;
     width: 40%;
     padding: 1%;
     margin: 30px auto;

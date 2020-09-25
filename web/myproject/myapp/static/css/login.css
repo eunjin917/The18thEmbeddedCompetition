@@ -6,7 +6,7 @@
     border: 1px solid slateblue;
     display: flex;
     justify-content: center;
-    background-color: snow;
+    background-color: white;
 }
 
 .label {
@@ -24,7 +24,7 @@
     display: flex;
     justify-content: center;
     background-color: slateblue;
-    color: snow;
+    color: white;
 }
 
 .messages {

@@ -5,29 +5,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주변 차량 확인하기(사용자)</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/for.css' %}">
+    <title>사고 정보 확인하기</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/accidentcheck.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 </head>
 
 <body>
     <div class="navbar">
-        <a href="{%url 'mainpage' %}"><button class="title">
-                <h1>TITLE</h1>
-            </button></a>
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>DOLPHIN</h1></button></a>
     </div>
-
     <h3 class="mycar-label">사고 차량</h3>
     <div class="mycar">차대번호 : {{mycar.VIN}}<br>운전자 이름 : {{mycar.name}}<br>연락처 : {{mycar.tel}}</div>
 
     <div class="info-container">
         {% if not accimoum %}
-        <h3 class="label">저장된 사고가 없습니다</h3>
+        <h3 class="label">저장된 사고 정보가 없습니다</h3>
         {% else %}
         <h3 class="label">사고 정보 확인하기</h3>
         {%if user.is_authenticated%}
             {% for info in accimoum %}
-            <a href="{% url 'searchdata' info.id %}"><button class="info-item">{{info.date}} - 주변 차량
+            <a href="{% url 'detaildata' info.id %}"><button class="info-item">{{info.date}} - 주변 차량
                     {{info.carcount}}대</button></a>
             {% endfor %}
         {% else %}

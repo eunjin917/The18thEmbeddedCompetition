@@ -12,11 +12,8 @@
 
 <body>
     <div class="navbar">
-        <a href="{%url 'mainpage' %}"><button class="title">
-                <h1>TITLE</h1>
-            </button></a>
+        <a href="{%url 'mainpage' %}"><button class="title"><h1>DOLPHIN</h1></button></a>
     </div>
-
     <form method="POST" class="container">
         {% csrf_token %}
         {% for i in signup_form %}

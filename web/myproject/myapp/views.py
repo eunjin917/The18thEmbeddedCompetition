@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm, FileUploadForm, UserForm, LoginForm
-from .models import Register, FileUpload, User, Accident
+from .forms import DeviceForm, FileUploadForm, UserForm, LoginForm
+from .models import Device, FileUpload, User, Accident
 from django.contrib.auth import authenticate
 from django.contrib import auth
 from django.contrib import messages
@@ -18,24 +18,24 @@ def mainpage(request):
 
 
 def register(request):
-    regiform = RegisterForm
+    regiform = DeviceForm
     if request.method == 'POST':
-        regiform = RegisterForm(request.POST)
+        regiform = DeviceForm(request.POST)
         if regiform.is_valid():
+            # 입력 정확한지 확인 및 메시지 띄우기
             if len(regiform.cleaned_data['VIN']) != 17:
                 messages.info(request, '차대번호 17자리를 정확하게 입력해주세요.')
             elif len(regiform.cleaned_data['MAC']) != 12:
                 messages.info(request, 'MAC주소 12자리를 정확하게 입력해주세요.')
             elif len(regiform.cleaned_data['tel']) not in [12, 13] or regiform.cleaned_data['tel'].count('-') != 2:
-                messages.info(
-                    request, '연락처 12자리 또는 13자리를 -를 포함하여 정확하게 입력해주세요.')
+                messages.info(request, '연락처 12자리 또는 13자리를 -를 포함하여 정확하게 입력해주세요.')
             else:
-                regiform.save()
+                regiform.save() # 모두 정확하면 저장
 
                 # 원래 사고정보-기기등록 안 된 차량에 해당되는 것이 있는지 확인 후, 사고 정보 업데이트
                 acci = Accident.objects.all()
-                myinfo = Register.objects.get(MAC=regiform.cleaned_data['MAC'])
-                contain_acci = acci.filter(noregicar__icontains=regiform.cleaned_data['MAC']).all() # 해당되는 사고들 다~ 찾아오기
+                myinfo = Device.objects.get(MAC=regiform.cleaned_data['MAC'])
+                contain_acci = acci.filter(noregicar__icontains=regiform.cleaned_data['MAC']).all() # 해당되는 사고들 다 찾아오기
                 for oneacci in contain_acci:
                     # 1. noregicar 수정
                     noregilst = eval(oneacci.noregicar)
@@ -76,7 +76,9 @@ def signup(request):
     if request.method == 'POST':
         signup_form = UserForm(request.POST)
         if signup_form.is_valid():
-            user = signup_form.save()
+            user = signup_form.save(commit=False)
+            user.is_staff = True
+            user.save()
             auth.login(request, user)
             return redirect('mainpage')
     else:
@@ -95,7 +97,6 @@ def signup(request):
 
 def fileupload(request):
     if request.method == 'POST':
-        # Do not forget to add: request.FILES
         fileform = FileUploadForm(request.POST, request.FILES)
         if fileform.is_valid():
             fileform.save()
@@ -116,7 +117,7 @@ def accidentcheck(request):
         myfileitem.delete()
         # 가공
         datas = data.split('\r\n')
-        infos = Register.objects.all()
+        infos = Device.objects.all()
 
         # 1. 내 차량
         mycarMAC = datas[0]
@@ -129,7 +130,7 @@ def accidentcheck(request):
         # 2. 모든 차량 정보 2차원배열에 넣기
         cardata = []
         for item in datas:
-            cardata += [item.split(' ')]
+            cardata += [item.split('\t')]
 
         # 3. 사고 정보 뽑아내기
         isacci = 0
@@ -137,6 +138,7 @@ def accidentcheck(request):
         accicar = []
         time = ''
         for item in cardata:
+            # print(item)
             if item[3] == '1':
                 isacci += 1
                 if isacci == 1: # 첫 번째 사고주변 차량일 경우
@@ -186,8 +188,7 @@ def alldata(request):
 
 
 @login_required
-def searchdata(request, id):
-    # infos = Register.objects.all()
+def detaildata(request, id):
     acci = Accident.objects.get(pk=id)
 
     mycar = acci.mycar
@@ -197,7 +198,7 @@ def searchdata(request, id):
     
     context = {'mycar':mycar, 'othercars': othercars, 'noregicar':noregicar, 'carcount':carcount}
 
-    return render(request, 'searchdata.html', context)
+    return render(request, 'dataildata.html', context)
 
 
 def error(request):

@@ -10,6 +10,16 @@
     font-weight: bold;
 }
 
+.howto-img {
+    display: flex;
+    margin: 0 auto;
+}
+
+.howto-p {
+    display: flex;
+    margin: 20px auto;
+}
+
 .file_item {
     display: flex;
     margin-left: 30%;
@@ -25,5 +35,5 @@
     display: flex;
     justify-content: center;
     background-color: slateblue;
-    color: snow;
+    color: white;
 }

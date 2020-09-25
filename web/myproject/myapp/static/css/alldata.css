@@ -26,7 +26,7 @@
     margin: auto auto;
     border: 2px solid slateblue;
     /* border-radius: 2%; */
-    background-color: snow;
+    background-color: white;
 }
 
 .search-button {
@@ -37,7 +37,7 @@
     border: 0;
     display: inline-block;
     background-color: slateblue;
-    color: snow;
+    color: white;
 }
 
 #search-icon {
@@ -61,6 +61,6 @@
     margin: 10px 0;
     background-color: slateblue;
     font-weight: bold;
-    color: snow;
+    color: white;
     /* outline: 0; */
 }
