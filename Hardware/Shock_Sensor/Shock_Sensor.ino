@@ -1,7 +1,7 @@
 //아두이노간에 I2C 통신방식을 이용
 #include <Wire.h>
 
-#define SHOCK 8 //핀 설정(디지털신호 받는 핀)
+#define SHOCK 8 // 핀 설정(디지털신호 받는 핀)
 
 void setup() {
   Serial.begin(9600);
