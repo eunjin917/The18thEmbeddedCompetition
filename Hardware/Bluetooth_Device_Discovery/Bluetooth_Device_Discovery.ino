@@ -30,7 +30,7 @@ void setup(){
     Serial.println("initialization failed!"); // SD카드 모듈 초기화에 실패하면 에러를 출력합니다.
     while (1);
   }
-  myFile = SD.open("test.txt", FILE_WRITE);
+  myFile = SD.open("scan_history.txt", FILE_WRITE);
 }
 
 void loop(){
@@ -38,23 +38,14 @@ void loop(){
   if (HM10.find((char*)"OK+DIS")){
     String Inquiry_Response=HM10.readString();
     String str=String_cleanup(Inquiry_Response);
-    //Serial.print(str);//출력용
+    Serial.print(str);//출력용
     /*SD카드에 데이터 저장*/
-    myFile = SD.open("test.txt", FILE_WRITE);
+    myFile = SD.open("scan_history.txt", FILE_WRITE);
     if (myFile) { // 파일이 정상적으로 열리면 파일에 문자를 작성(추가)합니다.
       myFile.print(str);
       myFile.close(); // 파일을 닫습니다.
     }
-  /*sd카드에 저장된 데이터 읽기
-    myFile = SD.open("test.txt");
-    if(myFile){
-      while(myFile.available()){
-        Serial.write(myFile.read());
-      }
-    }
-    myFile.close();
   }
-  */
 }
 
 String String_cleanup(String str){ //쿼리문 정리
@@ -72,7 +63,7 @@ String String_cleanup(String str){ //쿼리문 정리
   while(str!=""){
     String temp=str.substring(0,str.indexOf('\n'));
     if(temp.substring(0,6)==vendor_code && temp.substring(13,20)==device_name){
-      newStr+=temp.substring(0,13)+"\t"+newTime+"\t"+flag;
+      newStr+=temp.substring(0,13)+'\t'+newTime+'\t'+flag;
     }
     str=str.substring(str.indexOf('\n')+1);
   }
