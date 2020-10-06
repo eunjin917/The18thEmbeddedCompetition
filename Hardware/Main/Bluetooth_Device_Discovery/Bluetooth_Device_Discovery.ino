@@ -19,7 +19,7 @@ void setup(){
   Serial.begin(9600); // 전송속도 설정
   HM10.begin(9600);
   Wire.begin(8);
-  Wire.onReceive(receiveData); //데이터를 받았을때 receiveDate함수를 실행
+  Wire.onReceive(receiveData); // 데이터를 받았을때 receiveDate함수를 실행
   /*--------------------------
   -> DS1302 시간 설정할떄만 사용
   time_setting(__TIME__,__DATE__);
@@ -30,7 +30,6 @@ void setup(){
     Serial.println("initialization failed!"); // SD카드 모듈 초기화에 실패하면 에러를 출력합니다.
     while (1);
   }
-  myFile = SD.open("scan_history.txt", FILE_WRITE);
 }
 
 void loop(){
@@ -40,7 +39,7 @@ void loop(){
     String str=String_cleanup(Inquiry_Response);
     Serial.print(str);//출력용
     /*SD카드에 데이터 저장*/
-    myFile = SD.open("scan_history.txt", FILE_WRITE);
+    myFile = SD.open("scan.txt", FILE_WRITE);
     if (myFile) { // 파일이 정상적으로 열리면 파일에 문자를 작성(추가)합니다.
       myFile.print(str);
       myFile.close(); // 파일을 닫습니다.
