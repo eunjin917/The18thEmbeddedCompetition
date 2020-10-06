@@ -12,13 +12,13 @@ from django.contrib import messages
 
 
 def mainpage(request):
-    user = request.user
+    user = request.user # user 정보 보내기
     context = {'user': user}
     return render(request, 'mainpage.html', context)
 
 
 def register(request):
-    regiform = DeviceForm
+    regiform = DeviceForm # DeviceForm 띄울 것 (-> Device model에 저장하도록)
     if request.method == 'POST':
         regiform = DeviceForm(request.POST)
         if regiform.is_valid():
@@ -55,13 +55,15 @@ def register(request):
 
 class UserLoginView(LoginView):
     template_name = 'registration/login.html'
-    authentication_form = LoginForm
+    authentication_form = LoginForm # 폼은 LoginForm 사용
 
+    # 템플릿에 로그인폼을 뿌려주기 위한 과정 (context 뿌림)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['loginform'] = LoginForm
         return context
 
+    # form이 유효한지 확인
     def form_valid(self, form):
         user = form.get_user()
         auth.login(self.request, user)
@@ -69,6 +71,7 @@ class UserLoginView(LoginView):
 
 
 def signup(request):
+    # 혹시 로그인 돼있으면 로그아웃부터
     user = request.user
     if user.is_authenticated:
         auth.logout(request)
@@ -76,16 +79,17 @@ def signup(request):
     if request.method == 'POST':
         signup_form = UserForm(request.POST)
         if signup_form.is_valid():
-            user = signup_form.save(commit=False)
-            user.is_staff = True
-            user.save()
-            auth.login(request, user)
+            user = signup_form.save(commit=False) # 잠시 멈추고
+            user.is_staff = True # 수사기관은 무조건 is_staff=True
+            user.save() # 저장
+            auth.login(request, user) # 회원가입과 동시에 자동 로그인
             return redirect('mainpage')
     else:
         signup_form = UserForm()
 
     context = {'signup_form': signup_form}
 
+    # 제대로 입력 안됐다면, 메시지 띄우기 (템플릿에 context 뿌리기)
     if signup_form.errors:
         for field in signup_form:
             if field.errors:
@@ -115,7 +119,7 @@ def accidentcheck(request):
         data = data.decode("utf-8")
         # 삭제
         myfileitem.delete()
-        # 가공
+        # 자르기
         datas = data.split('\r\n')
         infos = Device.objects.all()
 
@@ -138,36 +142,34 @@ def accidentcheck(request):
         accicar = []
         time = ''
         for item in cardata:
-            # print(item)
             if item[3] == '1':
                 isacci += 1
                 if isacci == 1: # 첫 번째 사고주변 차량일 경우
                     time = item[1]+'_'+item[2] # 발생시간 확인
                 accicar.append(item[0]) # 사고발생차량 리스트로 싹 저장
-            elif item[3] == '0':
-                if time != '':
-                    # 4. DB와 대조 및 업데이트
-                    try: # 이미 등록돼있는 경우 냅두고
-                        accident = Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).get()
-                    except: # 등록X경우에는 저장해서 올려야함
-                        accident = Accident.objects.create(mycar_date=mycar.VIN+'_'+time, mycar=mycar, date=time)
-                        noregilst = []
-                        for carmac in accicar:
-                            try: # 기기등록한 차량일 경우 등록
-                                info = infos.filter(MAC=carmac).get()
-                                accident.othercars.add(info)
-                            except: #기기등록X 차량일 경우 일단 list형식으로 저장
-                                noregilst.append(carmac)
-                        accident.carcount = isacci
-                        accident.noregicar = noregilst
-                        accident.save()
+            elif item[3] == '0' and time != '':
+                # 4. DB와 대조 및 업데이트
+                try: # 이미 등록돼있는 경우 냅두고
+                    accident = Accident.objects.filter(mycar_date=mycar.VIN+'_'+time).get()
+                except: # 등록X경우에는 저장해서 올려야함
+                    accident = Accident.objects.create(mycar_date=mycar.VIN+'_'+time, mycar=mycar, date=time)
+                    noregilst = []
+                    for carmac in accicar:
+                        try: # 기기등록한 차량일 경우 등록
+                            info = infos.filter(MAC=carmac).get()
+                            accident.othercars.add(info)
+                        except: #기기등록X 차량일 경우 일단 list형식으로 저장
+                            noregilst.append(carmac)
+                    accident.carcount = isacci
+                    accident.noregicar = noregilst
+                    accident.save()
 
-                    # 사고 객체 자체 (Accident객체)를 저장
-                    accimoum.append(accident)
-                    # 초기화
-                    time = ''
-                    accicar = []
-                    isacci = 0
+                # 사고 객체 자체 (Accident객체)를 저장
+                accimoum.append(accident)
+                # 초기화
+                time = ''
+                accicar = []
+                isacci = 0
 
         context = {'mycar': mycar, 'accimoum': accimoum}
     except:
@@ -198,7 +200,7 @@ def detaildata(request, id):
     
     context = {'mycar':mycar, 'othercars': othercars, 'noregicar':noregicar, 'carcount':carcount}
 
-    return render(request, 'dataildata.html', context)
+    return render(request, 'detaildata.html', context)
 
 
 def error(request):
