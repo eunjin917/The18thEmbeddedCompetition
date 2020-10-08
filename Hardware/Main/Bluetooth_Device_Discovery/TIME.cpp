@@ -58,8 +58,8 @@ void time_setting(String t, String d){//아두이노에서 시간을 받아와�
 
 
   //__DATE__ -> d "19:20:28"형식으로 read
-  first = d.indexOf(" ");
-  second = d.indexOf(" ",first+1);
+  first = d.indexOf(" "); // 첫번째 분기점
+  second = d.indexOf(" ",first+1); // 두번째 분기점
   str1 = d.substring(0, first); // 첫번째 토큰
   str2 = d.substring(first+1, second); // 두번째 토큰
   str3 = d.substring(second+1,d.length()); //세번째 토큰
