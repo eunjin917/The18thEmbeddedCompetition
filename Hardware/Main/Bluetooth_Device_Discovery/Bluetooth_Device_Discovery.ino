@@ -8,6 +8,7 @@
 #define BT_RX 3  // HM-10의 RX에 연결
 #define vendor_code "341513" // vendor code
 #define device_name "Dolphin" // device name
+#define macaddress "3415131E31FD" // 필터링 할 자신의 slave 블루투스 맥주소
 
 SoftwareSerial HM10(BT_TX,BT_RX);
 
@@ -30,17 +31,25 @@ void setup(){
     Serial.println("initialization failed!"); // SD카드 모듈 초기화에 실패하면 에러를 출력합니다.
     while (1);
   }
+  
+  myFile=SD.open("data.txt", FILE_WRITE);
+  if (myFile){
+    if(myFile.size()<=0){ // 데이터가 없을때 초기화 작업
+      myFile.println(macaddress);
+      myFile.close();
+    }
+  }
 }
 
 void loop(){
   HM10.write("AT+DISC?"); // Inquiry to HM10
-  if (HM10.find((char*)"OK+DIS")){
+  if (HM10.find((char*)"OK+DISC")){
     String Inquiry_Response=HM10.readString();
     String str=String_cleanup(Inquiry_Response);
-    Serial.print(str);//출력용
-    /*SD카드에 데이터 저장*/
-    myFile = SD.open("scan.txt", FILE_WRITE);
-    if (myFile) { // 파일이 정상적으로 열리면 파일에 문자를 작성(추가)합니다.
+    Serial.print(str); // 출력용
+    //SD카드에 데이터 저장
+    myFile = SD.open("data.txt", FILE_WRITE);
+    if (myFile){ // 파일이 정상적으로 열리면 파일에 문자를 작성(추가)합니다.
       myFile.print(str);
       myFile.close(); // 파일을 닫습니다.
     }
@@ -51,7 +60,7 @@ String String_cleanup(String str){ //쿼리문 정리
   str=str.substring(2);
   
   String newStr="";
-  String newTime=now();//현재시간
+  String newTime=now(); // 현재시간
   
   for(int i=0;i<10;i++){
     str.replace("OK+DIS"+String(i)+":","");
@@ -62,7 +71,9 @@ String String_cleanup(String str){ //쿼리문 정리
   while(str!=""){
     String temp=str.substring(0,str.indexOf('\n'));
     if(temp.substring(0,6)==vendor_code && temp.substring(13,20)==device_name){
-      newStr+=temp.substring(0,13)+'\t'+newTime+'\t'+flag;
+      if(!temp.startsWith(macaddress)){
+        newStr+=temp.substring(0,13)+'\t'+newTime+'\t'+flag;
+      }
     }
     str=str.substring(str.indexOf('\n')+1);
   }
