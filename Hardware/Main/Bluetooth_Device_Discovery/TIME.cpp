@@ -33,6 +33,7 @@ String now(){ // 2020년09월25일  17시00분07초 형식으로 출력
   int S=t.sec;
   String y,m1,d,h,m2,s;
 
+  // 00:00:00 형식으로 출력하기위한 과정
   y=String(t.year);
   m1=M1<10 ? "0"+String(M1) : String(M1);
   d=D<10 ? "0"+String(D) : String(D);
@@ -64,6 +65,8 @@ void time_setting(String t, String d){//아두이노에서 시간을 받아와�
   str2 = d.substring(first+1, second); // 두번째 토큰
   str3 = d.substring(second+1,d.length()); //세번째 토큰
   int month;
+
+  // string로 받은 month, int형으로 변환
   if(str1.compareTo("Jan")==0){
     month=1;
   }
