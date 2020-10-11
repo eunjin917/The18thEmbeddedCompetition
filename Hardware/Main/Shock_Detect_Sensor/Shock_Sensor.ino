@@ -10,7 +10,7 @@ void setup() {
 }
 
 void loop() {
-  Wire.beginTransmission(8);// address는 8
+  Wire.beginTransmission(8); // address는 8
   if (digitalRead(SHOCK) != HIGH) { // 충돌이 발생하면 데이터를 송신
     Wire.write(1);
   }
