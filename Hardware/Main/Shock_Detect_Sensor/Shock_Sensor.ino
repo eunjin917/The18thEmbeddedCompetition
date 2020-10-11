@@ -1,7 +1,7 @@
 //아두이노간에 I2C 통신방식을 이용
 #include <Wire.h>
 
-#define SHOCK 8 // 핀 설정(디지털신호 받는 핀)
+#define SHOCK 8 // 충돌감지 센서 핀 설정(디지털신호 받는 핀)
 
 void setup() {
   Serial.begin(9600);
@@ -10,10 +10,9 @@ void setup() {
 }
 
 void loop() {
-  //아두이노에 데이터 전송/
-  Wire.beginTransmission(8);
-  if (digitalRead(SHOCK) != HIGH) { // 충격을 감지했을 때
-    Wire.write(1); // 충격을 받았다고 신호 전송
+  Wire.beginTransmission(8);// address는 8
+  if (digitalRead(SHOCK) != HIGH) { // 충돌이 발생하면 데이터를 송신
+    Wire.write(1);
   }
   Wire.endTransmission();
 }
