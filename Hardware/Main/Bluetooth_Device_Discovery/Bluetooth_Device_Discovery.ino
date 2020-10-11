@@ -19,19 +19,19 @@ File myFile;
 void setup(){
   Serial.begin(9600); // 전송속도 설정
   HM10.begin(9600);
-  Wire.begin(8);
+  Wire.begin(8); // I2C통신을 하기위한 address(8)
   Wire.onReceive(receiveData); // 데이터를 받았을때 receiveDate함수를 실행
   /*--------------------------
-  -> DS1302 시간 설정할떄만 사용
+  -> DS1302 시간 설정할 때 사용
   time_setting(__TIME__,__DATE__);
   --------------------------*/
-  DS1302_Start();
+  DS1302_Start(); // 시계모듈 실행
 
-  if (!SD.begin(4)) { // SD카드 모듈을 초기화합니다.
-    Serial.println("initialization failed!"); // SD카드 모듈 초기화에 실패하면 에러를 출력합니다.
+  if (!SD.begin(4)) { // SD카드 모듈을 초기화
+    Serial.println("initialization failed!"); // SD카드 모듈 초기화에 실패하면 에러를 출력
     while (1);
   }
-  
+  // data.txt 열기
   myFile=SD.open("data.txt", FILE_WRITE);
   if (myFile){
     if(myFile.size()<=0){ // 데이터가 없을때 초기화 작업
@@ -47,16 +47,16 @@ void loop(){
     String Inquiry_Response=HM10.readString();
     String str=String_cleanup(Inquiry_Response);
     Serial.print(str); // 출력용
-    //SD카드에 데이터 저장
+    // SD카드에 데이터 저장
     myFile = SD.open("data.txt", FILE_WRITE);
-    if (myFile){ // 파일이 정상적으로 열리면 파일에 문자를 작성(추가)합니다.
+    if (myFile){ // 파일이 정상적으로 열리면 파일에 문자를 작성(추가)
       myFile.print(str);
-      myFile.close(); // 파일을 닫습니다.
+      myFile.close(); // 파일을 닫기
     }
   }
 }
 
-String String_cleanup(String str){ //쿼리문 정리
+String String_cleanup(String str){ // Inquiry 데이터 정리
   str=str.substring(2);
   
   String newStr="";
@@ -71,7 +71,7 @@ String String_cleanup(String str){ //쿼리문 정리
   while(str!=""){
     String temp=str.substring(0,str.indexOf('\n'));
     if(temp.substring(0,6)==vendor_code && temp.substring(13,20)==device_name){
-      if(!temp.startsWith(macaddress)){
+      if(!temp.startsWith(macaddress)){ // 자기 자신의 mac address도 필터하는 과정
         newStr+=temp.substring(0,13)+'\t'+newTime+'\t'+flag;
       }
     }
@@ -82,7 +82,7 @@ String String_cleanup(String str){ //쿼리문 정리
 }
 
 void receiveData(int size) {
-  while(Wire.available()>0) {
+  while(Wire.available()>0) { // 데이터가 있으면 충돌발생을 의미
     Wire.read();
     flag="1\n";
   }
